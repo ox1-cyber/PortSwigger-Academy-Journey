@@ -11,6 +11,7 @@ Bienvenue dans mon arsenal offensif. Ce dossier recense mes victoires sur les la
 - [x] 🟢 **Apprenti** : [Subverting application logic (Bypass de connexion)](./02-login-bypass.md)
 - [x] 🟠 **Praticien** : [UNION attacks - Determining the number of columns](./03-union-columns.md)
 - [x] 🟠 **Praticien** : [UNION attacks - Finding a column containing text](./04-union-find-text.md)
+- [x] 🟠 **Praticien** : [UNION attacks - Retrieving data from other tables](./05-union-retrieve-data.md)
 - [ ] 🔴 **Expert** : Blind SQL injection with conditional responses
 
 ---
