@@ -8,7 +8,7 @@ Bienvenue dans mon arsenal offensif. Ce dossier recense mes victoires sur les la
 *État d'avancement de mes exploits :*
 
 - [x] 🟢 **Apprenti** : [Retrieving hidden data](./01-retrieving-hidden-data.md)
-- [ ] 🟠 **Praticien** : Subverting application logic (Bypass de connexion)
+- [x] 🟠 **Praticien** : Subverting application logic (Bypass de connexion)
 - [ ] 🟠 **Praticien** : UNION attacks - Determining the number of columns returned by the query
 - [ ] 🔴 **Expert** : Blind SQL injection with conditional responses
 
