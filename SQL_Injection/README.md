@@ -14,8 +14,9 @@ Bienvenue dans mon arsenal offensif. Ce dossier recense mes victoires sur les la
 - [x] 🟠 **Praticien** : [UNION attacks - Retrieving data from other tables](./05-union-retrieve-data.md)
 - [x] 🟠 **Praticien** : [UNION attacks - Retrieving multiple values in a single column](./06-union-concat.md)
 - [x] 🟠 **Praticien** : [SQLi - Querying the database type and version](./07-union-db-version.md)
-- [x] 🟠 Praticien : [SQLi - Listing the database contents on non-Oracle](./08-union-schema-enum.md)
-- [x] 🔴 Expert : [Blind SQL injection with conditional responses](./09-blind-sqli-conditional.md)
+- [x] 🟠 **Praticien** : [SQLi - Listing the database contents on non-Oracle](./08-union-schema-enum.md)
+- [x] 🔴 **Praticien** : [Blind SQL injection with conditional responses](./09-blind-sqli-conditional.md)
+- [x] 🟠 **Praticien** : [Blind SQL injection with conditional errors](./10-blind-sqli-errors.md)
 
 ---
 
@@ -57,6 +58,9 @@ Bienvenue dans mon arsenal offensif. Ce dossier recense mes victoires sur les la
 
 * **Boolean-Based (Test Vrai/Faux avec SUBSTRING) :** `xyz' AND SUBSTRING((SELECT password FROM users WHERE username='administrator'),1,1)='a`
     * *Méthode :* Poser des questions fermées (OUI/NON) à la base de données. Automatiser l'extraction avec Burp Suite Intruder (Cluster Bomb) en faisant varier la position (1, 2, 3...) et le caractère à tester (a, b, c...). Identifier les succès via une différence de longueur de réponse HTTP ou de code statut.
+
+* **Error-Based (Test Vrai/Faux avec Division par zéro) :** `xyz'||(SELECT CASE WHEN (SUBSTR(password,1,1)='a') THEN TO_CHAR(1/0) ELSE '' END FROM users WHERE username='administrator')||'`
+    * *Méthode :* Forcer une erreur backend (ex: `1/0`) uniquement si la condition est vraie. Automatiser avec Burp Intruder (Cluster Bomb) et filtrer les réponses HTTP 500 (qui signifient que le caractère testé est correct). (*Exemple spécifique à Oracle avec `||` et `TO_CHAR`*).    
         
 
 
