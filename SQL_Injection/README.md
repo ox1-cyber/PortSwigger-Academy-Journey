@@ -17,7 +17,7 @@ Bienvenue dans mon arsenal offensif. Ce dossier recense mes victoires sur les la
 - [x] 🟠 **Praticien** : [SQLi - Listing the database contents on non-Oracle](./08-union-schema-enum.md)
 - [x] 🔴 **Praticien** : [Blind SQL injection with conditional responses](./09-blind-sqli-conditional.md)
 - [x] 🟠 **Praticien** : [Blind SQL injection with conditional errors](./10-blind-sqli-errors.md)
-
+- [x] 🟠 **Praticien** : [Visible error-based SQL injection](./11-visible-error-sqli.md)
 ---
 
 ## ⚔️ L'Arsenal Tactique (Cheatsheet)
@@ -62,5 +62,10 @@ Bienvenue dans mon arsenal offensif. Ce dossier recense mes victoires sur les la
 * **Error-Based (Test Vrai/Faux avec Division par zéro) :** `xyz'||(SELECT CASE WHEN (SUBSTR(password,1,1)='a') THEN TO_CHAR(1/0) ELSE '' END FROM users WHERE username='administrator')||'`
     * *Méthode :* Forcer une erreur backend (ex: `1/0`) uniquement si la condition est vraie. Automatiser avec Burp Intruder (Cluster Bomb) et filtrer les réponses HTTP 500 (qui signifient que le caractère testé est correct). (*Exemple spécifique à Oracle avec `||` et `TO_CHAR`*).    
         
+### 6. Injections SQL par Erreurs Visibles (Error-Based)
+*Forcer la base de données à afficher la donnée ciblée directement dans un message d'erreur à l'écran.*
+
+* **Data Leakage via CAST() (PostgreSQL / MSSQL) :** `' AND 1=CAST((SELECT password FROM users LIMIT 1) AS int)--`
+    * *Méthode :* Demander à la base de données de convertir une chaîne de caractères (comme un mot de passe) en entier (INT). L'opération va crasher et l'erreur affichera la valeur impossible à convertir (ex: `ERROR: invalid input syntax for type integer: "le_mot_de_passe"`). Attention aux limites de caractères, supprimer la valeur d'origine du paramètre si nécessaire pour faire de la place au payload.        
 
 
